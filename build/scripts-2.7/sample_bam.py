@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/local/anaconda2/bin/python
 
 # coding: utf-8
 
