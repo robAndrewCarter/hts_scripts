@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='hts_scripts',
-      version='0.3.0',
+      version='0.4.0',
       description='Scripts for processing NGS data',
       author='Rob Carter',
       author_email='robert.carter@stjude.org',

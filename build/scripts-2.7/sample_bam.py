@@ -119,12 +119,11 @@ if __name__ == '__main__':
     for same_size_list in sorted_bam_lengths_list_list:
         num_samples_of_same_length = len(same_size_list)
         assert(len(set(same_size_list)) == 1)
-        sample_length = same_size_list[0]
+        bam_length = same_size_list[0]
+        if bam_length > n_mapped_reads:
+            print('The number of reads to sample must be less than the number of mapped reads in the bam [n={}]. Not generating file'.format(str(n_mapped_reads)))
+            continue
         for _bam_length_index in range(0, num_samples_of_same_length):
-            bam_length = sorted_bam_lengths_list_list[_bam_length_index]
-            if bam_length > n_mapped_reads:
-                print('The number of reads to sample must be less than the number of mapped reads in the bam [n={}]. Not generating file'.format(str(n_mapped_reads)))
-                break
             bam_out_filename = os.path.join(args.output_dir,re.sub(".bam", "", os.path.basename(args.bam_filename)) + "_sample_" + "{:0>5d}".format(_bam_length_index) + "_n" + str(bam_length) + ".bam")
             sample_and_write_file(args.bam_filename, bam_out_filename, float(bam_length)/(n_mapped_reads))
             sort_and_index_bamfile(bam_out_filename)
