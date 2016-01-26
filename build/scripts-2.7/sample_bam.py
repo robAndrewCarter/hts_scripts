@@ -4,7 +4,7 @@
 
 # In[ ]:
 
-#__version__= 0.3.0
+#__version__= 0.5.0
 
 
 # In[1]:
@@ -106,9 +106,10 @@ def get_mapped_paired_read_count(bam_filename):
 # In[85]:
 
 
-def sort_and_index_bamfile(bam_filename):
-    subprocess.check_call(['samtools', 'sort', '{}'.format(bam_filename), '{}'.format(re.sub('\..*$', '', ))])
+def sort_and_index_and_flagstat_bamfile(bam_filename):
+    subprocess.check_call(['samtools', 'sort', '-o', '{}'.format(re.sub('\..*$', '.bam', bam_filename)), bam_filename])
     subprocess.check_call(['samtools', 'index', '{}'.format(bam_filename)])
+    subprocess.check_call(['samtools', 'flagstat', '{}'.format(bam_filename), '{}.flagstat'.format(bam_filename)])
 
 if __name__ == '__main__':
     args = parse_args()
@@ -126,5 +127,5 @@ if __name__ == '__main__':
         for _bam_length_index in range(0, num_samples_of_same_length):
             bam_out_filename = os.path.join(args.output_dir,re.sub(".bam", "", os.path.basename(args.bam_filename)) + "_sample_" + "{:0>5d}".format(_bam_length_index) + "_n" + str(bam_length) + ".bam")
             sample_and_write_file(args.bam_filename, bam_out_filename, float(bam_length)/(n_mapped_reads))
-            sort_and_index_bamfile(bam_out_filename)
+            sort_and_index_and_flagstat_bamfile(bam_out_filename)
 
