@@ -4,7 +4,7 @@
 
 # In[ ]:
 
-#__version__= 0.5.0
+#__version__= 0.7.0
 
 
 # In[1]:
@@ -107,9 +107,13 @@ def get_mapped_paired_read_count(bam_filename):
 
 
 def sort_and_index_and_flagstat_bamfile(bam_filename):
-    subprocess.check_call(['samtools', 'sort', '-o', '{}'.format(re.sub('\..*$', '.bam', bam_filename)), bam_filename])
+    subprocess.check_call(['samtools', 'sort', bam_filename, '{}'.format(re.sub('\..*$', '', bam_filename))])
     subprocess.check_call(['samtools', 'index', '{}'.format(bam_filename)])
-    subprocess.check_call(['samtools', 'flagstat', '{}'.format(bam_filename), '{}.flagstat'.format(bam_filename)])
+    flagstat_output = subprocess.check_output(['samtools', 'flagstat', '{}'.format(bam_filename)])
+    fh = open('{}.flagstat'.format(bam_filename), 'w')
+    fh.writelines(flagstat_output)
+    fh.close()
+
 
 if __name__ == '__main__':
     args = parse_args()
