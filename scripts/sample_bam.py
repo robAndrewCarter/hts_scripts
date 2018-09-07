@@ -107,8 +107,11 @@ def get_mapped_paired_read_count(bam_filename):
 
 
 def sort_and_index_and_flagstat_bamfile(bam_filename):
-    subprocess.check_call(['samtools', 'sort', bam_filename, '{}'.format(re.sub('\..*$', '', bam_filename))])
-    subprocess.check_call(['samtools', 'index', '{}'.format(bam_filename)])
+    subprocess.check_call(['samtools', 'sort', bam_filename,
+        '{}'.format(re.sub('\..*$', '', bam_filename))], universal_newlines =
+        True)
+    subprocess.check_call(['samtools', 'index', '{}'.format(bam_filename)], universal_newlines =
+        True)
     flagstat_output = subprocess.check_output(['samtools', 'flagstat', '{}'.format(bam_filename)])
     fh = open('{}.flagstat'.format(bam_filename), 'w')
     fh.writelines(flagstat_output)
