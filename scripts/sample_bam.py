@@ -94,7 +94,8 @@ def get_mapped_paired_read_count(bam_filename):
     It calls samtools flagstat, reads stdout, then pulls the first word (the read count) from the third line after verifying it contains the
     word 'mapped'. The count is returned as an integer
     """
-    flagstat_list = subprocess.check_output(['samtools', 'flagstat', bam_filename]).split("\n")
+    flagstat_list = subprocess.check_output(['samtools', 'flagstat', bam_filename], universal_newlines =
+        True).split("\n")
     if "supplementary" in flagstat_list[2]:
         assert re.search('mapped', flagstat_list[4])
         return int(flagstat_list[4].split(" ")[0])
@@ -108,11 +109,10 @@ def get_mapped_paired_read_count(bam_filename):
 
 def sort_and_index_and_flagstat_bamfile(bam_filename):
     subprocess.check_call(['samtools', 'sort', bam_filename,
-        '{}'.format(re.sub('\..*$', '', bam_filename))], universal_newlines =
+        '{}'.format(re.sub('\..*$', '', bam_filename))])
+    subprocess.check_call(['samtools', 'index', '{}'.format(bam_filename)])
+    flagstat_output = subprocess.check_output(['samtools', 'flagstat', '{}'.format(bam_filename)], universal_newlines =
         True)
-    subprocess.check_call(['samtools', 'index', '{}'.format(bam_filename)], universal_newlines =
-        True)
-    flagstat_output = subprocess.check_output(['samtools', 'flagstat', '{}'.format(bam_filename)])
     fh = open('{}.flagstat'.format(bam_filename), 'w')
     fh.writelines(flagstat_output)
     fh.close()
